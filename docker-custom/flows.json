@@ -15,5 +15,92 @@
         "x": 350,
         "y": 80,
         "wires": []
+    },
+    {
+        "id": "e4412eec.8b13c",
+        "type": "debug",
+        "z": "f6f2187d.f17ca8",
+        "name": "Neets Binary",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 590,
+        "y": 240,
+        "wires": []
+    },
+    {
+        "id": "83a04e53.edc74",
+        "type": "udp in",
+        "z": "f6f2187d.f17ca8",
+        "name": "Neets Listner",
+        "iface": "",
+        "port": "8000",
+        "ipv": "udp4",
+        "multicast": "false",
+        "group": "",
+        "datatype": "buffer",
+        "x": 120,
+        "y": 340,
+        "wires": [
+            [
+                "d7304469.3ed778",
+                "697df9ed.ea51c8"
+            ]
+        ]
+    },
+    {
+        "id": "d7304469.3ed778",
+        "type": "binary",
+        "z": "f6f2187d.f17ca8",
+        "name": "",
+        "property": "payload",
+        "pattern": "{}",
+        "x": 340,
+        "y": 320,
+        "wires": [
+            [
+                "e4412eec.8b13c"
+            ]
+        ]
+    },
+    {
+        "id": "697df9ed.ea51c8",
+        "type": "function",
+        "z": "f6f2187d.f17ca8",
+        "name": "",
+        "func": "\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "x": 370,
+        "y": 400,
+        "wires": [
+            [
+                "79a54913.d9d9f8"
+            ]
+        ]
+    },
+    {
+        "id": "79a54913.d9d9f8",
+        "type": "debug",
+        "z": "f6f2187d.f17ca8",
+        "name": "NeetsFunction",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 630,
+        "y": 400,
+        "wires": []
     }
 ]
