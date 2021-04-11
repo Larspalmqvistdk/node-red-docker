@@ -7,6 +7,13 @@
         "info": ""
     },
     {
+        "id": "4d753ba0.d766e4",
+        "type": "tab",
+        "label": "Flow 1",
+        "disabled": false,
+        "info": ""
+    },
+    {
         "id": "3cc11d24.ff01a2",
         "type": "comment",
         "z": "f6f2187d.f17ca8",
@@ -102,5 +109,302 @@
         "x": 630,
         "y": 400,
         "wires": []
+    },
+    {
+        "id": "8a4458b6.e643e8",
+        "type": "debug",
+        "z": "4d753ba0.d766e4",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 790,
+        "y": 200,
+        "wires": []
+    },
+    {
+        "id": "8bbcca99.8fd798",
+        "type": "function",
+        "z": "4d753ba0.d766e4",
+        "name": "add timestamp",
+        "func": "let timestamp = new Date(msg.payload[\"Date of Identification (DD/MM/YYYY)\"]);\n\nmsg.payload.Timestamp = timestamp\n//let Timestamp1 = TimeStamp.getTime();\nmsg.payload.time = timestamp.getTime();\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "x": 560,
+        "y": 20,
+        "wires": [
+            [
+                "8a4458b6.e643e8"
+            ]
+        ]
+    },
+    {
+        "id": "e16479c1.5871e8",
+        "type": "csv",
+        "z": "4d753ba0.d766e4",
+        "name": "",
+        "sep": ";",
+        "hdrin": true,
+        "hdrout": "all",
+        "multi": "one",
+        "ret": "\\n",
+        "temp": "NO;Date of Identification (DD/MM/YYYY);Name;Surname ;DOB (DD/MM/YYYY);Age (years);Gender (M/F);Referral Clinic ;Screening number;PID;HIV Status;ARM;TRIAL/PROGRAMME;ADDRESS;LOCATOR;PRIMARY NUMBER;NEXT OF KIN ;RELATIONSHIP;PKPD ;PRO SUB-STUDY;HEALTH ECONOMIC;VOT",
+        "skip": "0",
+        "strings": true,
+        "include_empty_strings": false,
+        "include_null_values": false,
+        "x": 370,
+        "y": 100,
+        "wires": [
+            [
+                "8bbcca99.8fd798"
+            ]
+        ]
+    },
+    {
+        "id": "f5096b3f.aed0f8",
+        "type": "file in",
+        "z": "4d753ba0.d766e4",
+        "name": "CTU and DG Data_KW.csv",
+        "filename": "/data/tmp.csv",
+        "format": "utf8",
+        "chunk": false,
+        "sendError": false,
+        "encoding": "none",
+        "x": 140,
+        "y": 100,
+        "wires": [
+            [
+                "e16479c1.5871e8"
+            ]
+        ]
+    },
+    {
+        "id": "760f0ec5.4e1d5",
+        "type": "inject",
+        "z": "4d753ba0.d766e4",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 100,
+        "y": 260,
+        "wires": [
+            [
+                "f5096b3f.aed0f8"
+            ]
+        ]
+    },
+    {
+        "id": "b3f94ac0.81a6f8",
+        "type": "debug",
+        "z": "4d753ba0.d766e4",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 650,
+        "y": 400,
+        "wires": []
+    },
+    {
+        "id": "5aee8c5a.07df74",
+        "type": "udp in",
+        "z": "4d753ba0.d766e4",
+        "name": "NeetsDiscovery",
+        "iface": "",
+        "port": "8000",
+        "ipv": "udp4",
+        "multicast": "false",
+        "group": "",
+        "datatype": "buffer",
+        "x": 100,
+        "y": 360,
+        "wires": [
+            [
+                "b1d2e435.4c6718"
+            ]
+        ]
+    },
+    {
+        "id": "7d542631.1a4a48",
+        "type": "inject",
+        "z": "4d753ba0.d766e4",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": "",
+        "topic": "",
+        "payload": "[78,101,101,116,115,46,86]",
+        "payloadType": "bin",
+        "x": 130,
+        "y": 540,
+        "wires": [
+            [
+                "cbd75f74.10237"
+            ]
+        ]
+    },
+    {
+        "id": "33c57d20.2de4d2",
+        "type": "debug",
+        "z": "4d753ba0.d766e4",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 710,
+        "y": 280,
+        "wires": []
+    },
+    {
+        "id": "ef2f35d2.55bd18",
+        "type": "binary",
+        "z": "4d753ba0.d766e4",
+        "name": "Bit mapper buffer",
+        "property": "payload",
+        "pattern": "b8[8] =>Header, \nb8[4] =>SN, \nb8 =>HWRev, \nb8[4] =>IP,  \nb8[4] =>Subnet, \nb8 =>DHCO, \nb8[5] =>SVersion, \nb8 =>UnitDescriptionLength,\nb8 =>UnitLocationLength, \nb8z =>UnitDescription\n",
+        "x": 390,
+        "y": 320,
+        "wires": [
+            [
+                "33c57d20.2de4d2"
+            ]
+        ]
+    },
+    {
+        "id": "4a735b47.1a1b04",
+        "type": "udp in",
+        "z": "4d753ba0.d766e4",
+        "name": "Key change",
+        "iface": "",
+        "port": "8001",
+        "ipv": "udp4",
+        "multicast": "false",
+        "group": "",
+        "datatype": "buffer",
+        "x": 100,
+        "y": 460,
+        "wires": [
+            [
+                "8afa7f0b.c6296",
+                "b3f94ac0.81a6f8"
+            ]
+        ]
+    },
+    {
+        "id": "cbd75f74.10237",
+        "type": "udp out",
+        "z": "4d753ba0.d766e4",
+        "name": "broadcast",
+        "addr": "255.255.255.255",
+        "iface": "",
+        "port": "8000",
+        "ipv": "udp4",
+        "outport": "",
+        "base64": false,
+        "multicast": "false",
+        "x": 330,
+        "y": 580,
+        "wires": []
+    },
+    {
+        "id": "b1d2e435.4c6718",
+        "type": "function",
+        "z": "4d753ba0.d766e4",
+        "name": "",
+        "func": "//var Parser = require(\"binary-parser-encoder\").Parser;\nvar Packet = global.get('binary_parser');\nvar buf = msg.payload;\n\n//var Parser = require('dist/binary_parser').Parser;\n//var Packet = global.get('binary_parser');\n//var buf = msg.payload;\n\nvar typea = new Packet()\n  .endianess(\"little\")\n  .uint16(\"magic\")\n  .uint16(\"packet_type\")\n  .uint32(\"packet_size\")\n  .uint16(\"header_size\")\n  .uint16(\"scan_number\")\n  .uint16(\"packet_number\")\n  .double(\"timestamp_raw\")\n  .double(\"timestamp_syncw\")\n  .uint32(\"status_flags\")\n  .uint32(\"scan_frequencye\")\n  .uint16(\"num_points_scan\")\n  .uint16(\"num_points_packet\")\n  .uint16(\"first_index\")\n  .uint32(\"first_angle\")\n  .uint32(\"angular_increment\")\n  .uint32(\"iq_input\")\n  .uint32(\"iq_overload\")\n  .double(\"iq_timestamp_raw\")\n  .double(\"iq_timestamp_sync\")\n  .uint8(\"header_padding\");\n  \nmsg.payload = typea.parse(buf);\n\n\n\n//if (msg.magic === \"banana\") {\n//   return [ null, msg ];\n//} else {\n//   return [ msg, null ];\n//}\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "x": 380,
+        "y": 220,
+        "wires": [
+            [
+                "33c57d20.2de4d2"
+            ]
+        ]
+    },
+    {
+        "id": "8afa7f0b.c6296",
+        "type": "buffer-parser",
+        "z": "4d753ba0.d766e4",
+        "name": "",
+        "data": "payload",
+        "dataType": "msg",
+        "specification": "spec",
+        "specificationType": "ui",
+        "items": [
+            {
+                "type": "int16be",
+                "name": "item1",
+                "offset": 0,
+                "length": 1,
+                "offsetbit": 0,
+                "scale": "1",
+                "mask": ""
+            }
+        ],
+        "swap1": "",
+        "swap2": "",
+        "swap3": "",
+        "swap1Type": "swap",
+        "swap2Type": "swap",
+        "swap3Type": "swap",
+        "msgProperty": "payload",
+        "msgPropertyType": "str",
+        "resultType": "keyvalue",
+        "resultTypeType": "output",
+        "multipleResult": false,
+        "fanOutMultipleResult": false,
+        "setTopic": true,
+        "outputs": 1,
+        "x": 440,
+        "y": 520,
+        "wires": [
+            [
+                "b3f94ac0.81a6f8"
+            ]
+        ]
     }
 ]
