@@ -1,114 +1,10 @@
 [
     {
-        "id": "f6f2187d.f17ca8",
-        "type": "tab",
-        "label": "Flow 1",
-        "disabled": false,
-        "info": ""
-    },
-    {
         "id": "4d753ba0.d766e4",
         "type": "tab",
         "label": "Flow 1",
         "disabled": false,
         "info": ""
-    },
-    {
-        "id": "3cc11d24.ff01a2",
-        "type": "comment",
-        "z": "f6f2187d.f17ca8",
-        "name": "WARNING: please check you have started this container with a volume that is mounted to /data\\n otherwise any flow changes are lost when you redeploy or upgrade the container\\n (e.g. upgrade to a more recent node-red docker image).\\n  If you are using named volumes you can ignore this warning.\\n Double click or see info side panel to learn how to start Node-RED in Docker to save your work",
-        "info": "\nTo start docker with a bind mount volume (-v option), for example:\n\n```\ndocker run -it -p 1880:1880 -v /home/user/node_red_data:/data --name mynodered nodered/node-red\n```\n\nwhere `/home/user/node_red_data` is a directory on your host machine where you want to store your flows.\n\nIf you do not do this then you can experiment and redploy flows, but if you restart or upgrade the container the flows will be disconnected and lost. \n\nThey will still exist in a hidden data volume, which can be recovered using standard docker techniques, but that is much more complex than just starting with a named volume as described above.",
-        "x": 350,
-        "y": 80,
-        "wires": []
-    },
-    {
-        "id": "e4412eec.8b13c",
-        "type": "debug",
-        "z": "f6f2187d.f17ca8",
-        "name": "Neets Binary",
-        "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "payload",
-        "targetType": "msg",
-        "statusVal": "",
-        "statusType": "auto",
-        "x": 590,
-        "y": 240,
-        "wires": []
-    },
-    {
-        "id": "83a04e53.edc74",
-        "type": "udp in",
-        "z": "f6f2187d.f17ca8",
-        "name": "Neets Listner",
-        "iface": "",
-        "port": "8000",
-        "ipv": "udp4",
-        "multicast": "false",
-        "group": "",
-        "datatype": "buffer",
-        "x": 120,
-        "y": 340,
-        "wires": [
-            [
-                "d7304469.3ed778",
-                "697df9ed.ea51c8"
-            ]
-        ]
-    },
-    {
-        "id": "d7304469.3ed778",
-        "type": "binary",
-        "z": "f6f2187d.f17ca8",
-        "name": "",
-        "property": "payload",
-        "pattern": "{}",
-        "x": 340,
-        "y": 320,
-        "wires": [
-            [
-                "e4412eec.8b13c"
-            ]
-        ]
-    },
-    {
-        "id": "697df9ed.ea51c8",
-        "type": "function",
-        "z": "f6f2187d.f17ca8",
-        "name": "",
-        "func": "\nreturn msg;",
-        "outputs": 1,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "x": 370,
-        "y": 400,
-        "wires": [
-            [
-                "79a54913.d9d9f8"
-            ]
-        ]
-    },
-    {
-        "id": "79a54913.d9d9f8",
-        "type": "debug",
-        "z": "f6f2187d.f17ca8",
-        "name": "NeetsFunction",
-        "active": true,
-        "tosidebar": true,
-        "console": false,
-        "tostatus": false,
-        "complete": "payload",
-        "targetType": "msg",
-        "statusVal": "",
-        "statusType": "auto",
-        "x": 630,
-        "y": 400,
-        "wires": []
     },
     {
         "id": "8a4458b6.e643e8",
@@ -246,7 +142,8 @@
         "y": 360,
         "wires": [
             [
-                "b1d2e435.4c6718"
+                "b1d2e435.4c6718",
+                "ef2f35d2.55bd18"
             ]
         ]
     },
@@ -283,16 +180,16 @@
         "id": "33c57d20.2de4d2",
         "type": "debug",
         "z": "4d753ba0.d766e4",
-        "name": "",
+        "name": "msgNeetsbinary",
         "active": true,
         "tosidebar": true,
         "console": false,
         "tostatus": false,
-        "complete": "payload",
-        "targetType": "msg",
+        "complete": "true",
+        "targetType": "full",
         "statusVal": "",
         "statusType": "auto",
-        "x": 710,
+        "x": 720,
         "y": 280,
         "wires": []
     },
@@ -304,7 +201,7 @@
         "property": "payload",
         "pattern": "b8[8] =>Header, \nb8[4] =>SN, \nb8 =>HWRev, \nb8[4] =>IP,  \nb8[4] =>Subnet, \nb8 =>DHCO, \nb8[5] =>SVersion, \nb8 =>UnitDescriptionLength,\nb8 =>UnitLocationLength, \nb8z =>UnitDescription\n",
         "x": 390,
-        "y": 320,
+        "y": 360,
         "wires": [
             [
                 "33c57d20.2de4d2"
@@ -352,11 +249,12 @@
         "type": "function",
         "z": "4d753ba0.d766e4",
         "name": "",
-        "func": "//var Parser = require(\"binary-parser-encoder\").Parser;\nvar Packet = global.get('binary_parser');\nvar buf = msg.payload;\n\n//var Parser = require('dist/binary_parser').Parser;\n//var Packet = global.get('binary_parser');\n//var buf = msg.payload;\n\nvar typea = new Packet()\n  .endianess(\"little\")\n  .uint16(\"magic\")\n  .uint16(\"packet_type\")\n  .uint32(\"packet_size\")\n  .uint16(\"header_size\")\n  .uint16(\"scan_number\")\n  .uint16(\"packet_number\")\n  .double(\"timestamp_raw\")\n  .double(\"timestamp_syncw\")\n  .uint32(\"status_flags\")\n  .uint32(\"scan_frequencye\")\n  .uint16(\"num_points_scan\")\n  .uint16(\"num_points_packet\")\n  .uint16(\"first_index\")\n  .uint32(\"first_angle\")\n  .uint32(\"angular_increment\")\n  .uint32(\"iq_input\")\n  .uint32(\"iq_overload\")\n  .double(\"iq_timestamp_raw\")\n  .double(\"iq_timestamp_sync\")\n  .uint8(\"header_padding\");\n  \nmsg.payload = typea.parse(buf);\n\n\n\n//if (msg.magic === \"banana\") {\n//   return [ null, msg ];\n//} else {\n//   return [ msg, null ];\n//}\nreturn msg;",
+        "func": "// Module import\nvar parser = global.get('binaryparser');\n \n// Build an IP packet header Parser\nvar ipHeader = new parser()\n.string(\"Header\", {\n    type: \"uint8\",\n    length: 8\n  })\n.array(\"SN\", {\n    type: \"uint8\",\n    length: 8\n  })\n.uint8(\"HWRev\")\n.array(\"IP\", {\n    type: \"uint8\",\n    length: 4\n  })\n.array(\"Subnet\", {\n    type: \"uint8\",\n    length: 4\n  }) \n.uint8(\"DHCO\") \n.string(\"SVersion\", {// should be DHCO for number of bytes\n    type: \"uint8\",\n    length: this.DHCO\n  }) \n.uint8(\"UnitDescriptionLength\") \n.uint8(\"UnitLocationLength\")\n.string('UnitDescription', {\n    length:\"UnitDescriptionLength\",\n    zeroTerminated: true\n  });\n \n// Prepare buffer to parse.\n//msg = Buffer.from(msg.payload.buffer);\n \n// Parse buffer and show result\nmsg = ipHeader.parse(msg.payload);\nreturn msg;\n\n",
         "outputs": 1,
         "noerr": 0,
         "initialize": "",
         "finalize": "",
+        "libs": [],
         "x": 380,
         "y": 220,
         "wires": [

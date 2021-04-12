@@ -1,106 +1,308 @@
 [
     {
-        "id": "f6f2187d.f17ca8",
+        "id": "4d753ba0.d766e4",
         "type": "tab",
         "label": "Flow 1",
         "disabled": false,
         "info": ""
     },
     {
-        "id": "3cc11d24.ff01a2",
-        "type": "comment",
-        "z": "f6f2187d.f17ca8",
-        "name": "WARNING: please check you have started this container with a volume that is mounted to /data\\n otherwise any flow changes are lost when you redeploy or upgrade the container\\n (e.g. upgrade to a more recent node-red docker image).\\n  If you are using named volumes you can ignore this warning.\\n Double click or see info side panel to learn how to start Node-RED in Docker to save your work",
-        "info": "\nTo start docker with a bind mount volume (-v option), for example:\n\n```\ndocker run -it -p 1880:1880 -v /home/user/node_red_data:/data --name mynodered nodered/node-red\n```\n\nwhere `/home/user/node_red_data` is a directory on your host machine where you want to store your flows.\n\nIf you do not do this then you can experiment and redploy flows, but if you restart or upgrade the container the flows will be disconnected and lost. \n\nThey will still exist in a hidden data volume, which can be recovered using standard docker techniques, but that is much more complex than just starting with a named volume as described above.",
-        "x": 350,
-        "y": 80,
-        "wires": []
-    },
-    {
-        "id": "e4412eec.8b13c",
+        "id": "8a4458b6.e643e8",
         "type": "debug",
-        "z": "f6f2187d.f17ca8",
-        "name": "Neets Binary",
+        "z": "4d753ba0.d766e4",
+        "name": "",
         "active": true,
         "tosidebar": true,
         "console": false,
         "tostatus": false,
-        "complete": "payload",
-        "targetType": "msg",
+        "complete": "false",
         "statusVal": "",
         "statusType": "auto",
-        "x": 590,
-        "y": 240,
+        "x": 790,
+        "y": 200,
         "wires": []
     },
     {
-        "id": "83a04e53.edc74",
+        "id": "8bbcca99.8fd798",
+        "type": "function",
+        "z": "4d753ba0.d766e4",
+        "name": "add timestamp",
+        "func": "let timestamp = new Date(msg.payload[\"Date of Identification (DD/MM/YYYY)\"]);\n\nmsg.payload.Timestamp = timestamp\n//let Timestamp1 = TimeStamp.getTime();\nmsg.payload.time = timestamp.getTime();\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "x": 560,
+        "y": 20,
+        "wires": [
+            [
+                "8a4458b6.e643e8"
+            ]
+        ]
+    },
+    {
+        "id": "e16479c1.5871e8",
+        "type": "csv",
+        "z": "4d753ba0.d766e4",
+        "name": "",
+        "sep": ";",
+        "hdrin": true,
+        "hdrout": "all",
+        "multi": "one",
+        "ret": "\\n",
+        "temp": "NO;Date of Identification (DD/MM/YYYY);Name;Surname ;DOB (DD/MM/YYYY);Age (years);Gender (M/F);Referral Clinic ;Screening number;PID;HIV Status;ARM;TRIAL/PROGRAMME;ADDRESS;LOCATOR;PRIMARY NUMBER;NEXT OF KIN ;RELATIONSHIP;PKPD ;PRO SUB-STUDY;HEALTH ECONOMIC;VOT",
+        "skip": "0",
+        "strings": true,
+        "include_empty_strings": false,
+        "include_null_values": false,
+        "x": 370,
+        "y": 100,
+        "wires": [
+            [
+                "8bbcca99.8fd798"
+            ]
+        ]
+    },
+    {
+        "id": "f5096b3f.aed0f8",
+        "type": "file in",
+        "z": "4d753ba0.d766e4",
+        "name": "CTU and DG Data_KW.csv",
+        "filename": "/data/tmp.csv",
+        "format": "utf8",
+        "chunk": false,
+        "sendError": false,
+        "encoding": "none",
+        "x": 140,
+        "y": 100,
+        "wires": [
+            [
+                "e16479c1.5871e8"
+            ]
+        ]
+    },
+    {
+        "id": "760f0ec5.4e1d5",
+        "type": "inject",
+        "z": "4d753ba0.d766e4",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 100,
+        "y": 260,
+        "wires": [
+            [
+                "f5096b3f.aed0f8"
+            ]
+        ]
+    },
+    {
+        "id": "b3f94ac0.81a6f8",
+        "type": "debug",
+        "z": "4d753ba0.d766e4",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 650,
+        "y": 400,
+        "wires": []
+    },
+    {
+        "id": "5aee8c5a.07df74",
         "type": "udp in",
-        "z": "f6f2187d.f17ca8",
-        "name": "Neets Listner",
+        "z": "4d753ba0.d766e4",
+        "name": "NeetsDiscovery",
         "iface": "",
         "port": "8000",
         "ipv": "udp4",
         "multicast": "false",
         "group": "",
         "datatype": "buffer",
-        "x": 120,
-        "y": 340,
+        "x": 100,
+        "y": 360,
         "wires": [
             [
-                "d7304469.3ed778",
-                "697df9ed.ea51c8"
+                "b1d2e435.4c6718",
+                "ef2f35d2.55bd18"
             ]
         ]
     },
     {
-        "id": "d7304469.3ed778",
-        "type": "binary",
-        "z": "f6f2187d.f17ca8",
+        "id": "7d542631.1a4a48",
+        "type": "inject",
+        "z": "4d753ba0.d766e4",
         "name": "",
-        "property": "payload",
-        "pattern": "{}",
-        "x": 340,
-        "y": 320,
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": "",
+        "topic": "",
+        "payload": "[78,101,101,116,115,46,86]",
+        "payloadType": "bin",
+        "x": 130,
+        "y": 540,
         "wires": [
             [
-                "e4412eec.8b13c"
+                "cbd75f74.10237"
             ]
         ]
     },
     {
-        "id": "697df9ed.ea51c8",
-        "type": "function",
-        "z": "f6f2187d.f17ca8",
-        "name": "",
-        "func": "\nreturn msg;",
-        "outputs": 1,
-        "noerr": 0,
-        "initialize": "",
-        "finalize": "",
-        "x": 370,
-        "y": 400,
-        "wires": [
-            [
-                "79a54913.d9d9f8"
-            ]
-        ]
-    },
-    {
-        "id": "79a54913.d9d9f8",
+        "id": "33c57d20.2de4d2",
         "type": "debug",
-        "z": "f6f2187d.f17ca8",
-        "name": "NeetsFunction",
+        "z": "4d753ba0.d766e4",
+        "name": "msgNeetsbinary",
         "active": true,
         "tosidebar": true,
         "console": false,
         "tostatus": false,
-        "complete": "payload",
-        "targetType": "msg",
+        "complete": "true",
+        "targetType": "full",
         "statusVal": "",
         "statusType": "auto",
-        "x": 630,
-        "y": 400,
+        "x": 720,
+        "y": 280,
         "wires": []
+    },
+    {
+        "id": "ef2f35d2.55bd18",
+        "type": "binary",
+        "z": "4d753ba0.d766e4",
+        "name": "Bit mapper buffer",
+        "property": "payload",
+        "pattern": "b8[8] =>Header, \nb8[4] =>SN, \nb8 =>HWRev, \nb8[4] =>IP,  \nb8[4] =>Subnet, \nb8 =>DHCO, \nb8[5] =>SVersion, \nb8 =>UnitDescriptionLength,\nb8 =>UnitLocationLength, \nb8z =>UnitDescription\n",
+        "x": 390,
+        "y": 360,
+        "wires": [
+            [
+                "33c57d20.2de4d2"
+            ]
+        ]
+    },
+    {
+        "id": "4a735b47.1a1b04",
+        "type": "udp in",
+        "z": "4d753ba0.d766e4",
+        "name": "Key change",
+        "iface": "",
+        "port": "8001",
+        "ipv": "udp4",
+        "multicast": "false",
+        "group": "",
+        "datatype": "buffer",
+        "x": 100,
+        "y": 460,
+        "wires": [
+            [
+                "8afa7f0b.c6296",
+                "b3f94ac0.81a6f8"
+            ]
+        ]
+    },
+    {
+        "id": "cbd75f74.10237",
+        "type": "udp out",
+        "z": "4d753ba0.d766e4",
+        "name": "broadcast",
+        "addr": "255.255.255.255",
+        "iface": "",
+        "port": "8000",
+        "ipv": "udp4",
+        "outport": "",
+        "base64": false,
+        "multicast": "false",
+        "x": 330,
+        "y": 580,
+        "wires": []
+    },
+    {
+        "id": "b1d2e435.4c6718",
+        "type": "function",
+        "z": "4d753ba0.d766e4",
+        "name": "",
+        "func": "// Module import\nvar parser = global.get('binaryparser');\n \n// Build an IP packet header Parser\nvar ipHeader = new parser()\n.string(\"Header\", {\n    type: \"uint8\",\n    length: 8\n  })\n.array(\"SN\", {\n    type: \"uint8\",\n    length: 8\n  })\n.uint8(\"HWRev\")\n.array(\"IP\", {\n    type: \"uint8\",\n    length: 4\n  })\n.array(\"Subnet\", {\n    type: \"uint8\",\n    length: 4\n  }) \n.uint8(\"DHCO\") \n.string(\"SVersion\", {// should be DHCO for number of bytes\n    type: \"uint8\",\n    length: \"DHCO\"\n  }) \n.uint8(\"UnitDescriptionLength\") \n.uint8(\"UnitLocationLength\")\n.string('UnitDescription', {\n    length:\"UnitDescriptionLength\",\n    zeroTerminated: true\n  });\n \n// Prepare buffer to parse.\n//msg = Buffer.from(msg.payload.buffer);\n \n// Parse buffer and show result\nmsg = ipHeader.parse(msg.payload);\nreturn msg;\n\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 380,
+        "y": 220,
+        "wires": [
+            [
+                "33c57d20.2de4d2"
+            ]
+        ]
+    },
+    {
+        "id": "8afa7f0b.c6296",
+        "type": "buffer-parser",
+        "z": "4d753ba0.d766e4",
+        "name": "",
+        "data": "payload",
+        "dataType": "msg",
+        "specification": "spec",
+        "specificationType": "ui",
+        "items": [
+            {
+                "type": "int16be",
+                "name": "item1",
+                "offset": 0,
+                "length": 1,
+                "offsetbit": 0,
+                "scale": "1",
+                "mask": ""
+            }
+        ],
+        "swap1": "",
+        "swap2": "",
+        "swap3": "",
+        "swap1Type": "swap",
+        "swap2Type": "swap",
+        "swap3Type": "swap",
+        "msgProperty": "payload",
+        "msgPropertyType": "str",
+        "resultType": "keyvalue",
+        "resultTypeType": "output",
+        "multipleResult": false,
+        "fanOutMultipleResult": false,
+        "setTopic": true,
+        "outputs": 1,
+        "x": 440,
+        "y": 520,
+        "wires": [
+            [
+                "b3f94ac0.81a6f8"
+            ]
+        ]
     }
 ]
