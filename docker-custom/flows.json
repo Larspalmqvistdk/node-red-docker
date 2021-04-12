@@ -254,7 +254,12 @@
         "noerr": 0,
         "initialize": "",
         "finalize": "",
-        "libs": [],
+        "libs": [
+            {
+                "var": "binaryParser",
+                "module": "binary-parser"
+            }
+        ],
         "x": 380,
         "y": 220,
         "wires": [
